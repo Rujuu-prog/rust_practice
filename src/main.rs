@@ -162,6 +162,14 @@ fn main() {
         12
     };
     println!("{}", if_result);
+
+    practice_match(0);
+
+    practice_loop();
+
+    practice_while();
+
+    practice_for();
 }
 
 fn say_hello() {
@@ -176,3 +184,57 @@ fn add(a: i32, b: i32) -> i32 {
     a + b
 }
 
+fn practice_match(x: i32) {
+    match x {
+        0 => println!("zero"),
+        1 => {
+            println!("one1");
+            println!("one2");
+        },
+        _ => println!("other"),
+    };
+
+    let y:i32 = match x {
+        0 => 1,
+        1 => 2,
+        _ => 0
+    };
+    println!("{}", y);
+}
+
+fn practice_loop() {
+    println!("#---loop start---");
+    let mut cnt: i32 = 0;
+    loop {
+        if cnt >= 10 {
+            break;
+        }
+        cnt += 1;
+        if cnt == 2 {
+            continue;
+        }
+        println!("{}", cnt);
+    }
+    println!("#---loop end---");
+}
+
+fn practice_while() {
+    println!("#---while start---");
+    let mut cnt: i32 = 0;
+    while cnt <= 5 {
+        println!("{}", cnt);
+        cnt += 1;
+    }
+    println!("#---while end---");
+}
+
+fn practice_for() {
+    for i in [0, 1, 2] {
+        println!("Count: {}", i);
+    }
+
+    let r = 1..=10;
+    for i in r {
+        println!("{}", i * i);
+    }
+}
