@@ -170,6 +170,15 @@ fn main() {
     practice_while();
 
     practice_for();
+
+    let fb_while_result = fizzbuzz_while(16);
+    println!("{}", fb_while_result);
+
+    let fb_for_match = fizzbuzz_for_match(16);
+    println!("{}", fb_for_match);
+
+    let fb_match_tuple = fizzbuzz_match_tuple(16);
+    println!("{}", fb_match_tuple);
 }
 
 fn say_hello() {
@@ -237,4 +246,47 @@ fn practice_for() {
     for i in r {
         println!("{}", i * i);
     }
+}
+
+fn fizzbuzz_while(num: i32) -> i32 {
+    let mut cnt: i32 = 1;
+    while cnt <= num {
+        if cnt % 3 == 0 && cnt % 5 == 0 {
+            println!("FizzBuzz");
+        } else if cnt % 3 == 0 {
+            println!("Fizz");
+        } else if cnt % 5 == 0 {
+            println!("Buzz");
+        } else {
+            println!("{}", cnt);
+        }
+        cnt += 1;
+    }
+    num
+}
+
+fn fizzbuzz_for_match(num: i32) -> i32 {
+    let r = 1..=num;
+    for i in r {
+        match i % 15 {
+            0 => println!("FizzBuzz"),
+            3 | 6 | 9 | 12 => println!("Fizz"),
+            5 | 10 => println!("Buzz"),
+            _ => println!("{}", i)
+        }
+    }
+    num
+}
+
+fn fizzbuzz_match_tuple(num: i32) ->i32 {
+    let r = 1..=num;
+    for i in r {
+        match (i%3, i%5) {
+            (0, 0) => println!("FizzBuzz"),
+            (0, _) => println!("Fizz"),
+            (_, 0) => println!("Buzz"),
+            _ => println!("{}", i)
+        }
+    }
+    num
 }
