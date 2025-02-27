@@ -179,6 +179,8 @@ fn main() {
 
     let fb_match_tuple = fizzbuzz_match_tuple(16);
     println!("{}", fb_match_tuple);
+
+    ownership();
 }
 
 fn say_hello() {
@@ -290,3 +292,37 @@ fn fizzbuzz_match_tuple(num: i32) ->i32 {
     }
     num
 }
+
+fn ownership() {
+    // 所有権について
+    // 1. 各値は, 各変数（所有者）に対応している
+    // 2. 所有者は１つであること（借用や参照はできる）
+    // 3. 所有者がスコープから外れると、値も破棄される（所有者と値のライフタイムが同じ）
+
+    let num = 10;
+    {
+        // ヒープに実際の値が入る
+        // スタックにはptr（ヒープの先頭アドレス）とlen（ヒープに格納された値の長さ）、capacity（ヒープに確保したメモリの容量）が格納される
+        let mut v1 = vec![0, 1, 2];
+        println!("{:?}", v1);
+
+        let v2 = v1;
+        println!("{:?}", v2);
+
+        // v1からv2へ所有権が移ったため、エラーになる
+        // v1.push(3);
+    }// v2の値が破棄されて、メモリが解放される
+
+    {// コピーについて
+        let c1 = vec![1, 2, 3];
+        println!("{:?}", c1);
+        // 例外として、StringやVectorには、cloneメソッドも存在する
+        // 基本的には所有権の移動を優先で使い、cloneを使う際にはサイズが大きくないかなど注意する必要がある
+        // それぞれの変数がそれぞれの値を所有することになる
+        let c2 = c1.clone();
+        println!("{:?}", c1);
+        println!("{:?}", c2);
+    }
+
+    println!("{}", num);
+}// numの値が破棄されて、メモリも解放される
