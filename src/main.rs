@@ -326,3 +326,54 @@ fn ownership() {
 
     println!("{}", num);
 }// numの値が破棄されて、メモリも解放される
+
+fn lifetime() {
+    // 参照が有効になるスコープ
+    // - 参照はすべてlifetimeを保持している
+    // 基本的にlifetimeも推論される
+    // ダングリングポインタ（無効なメモリアドレスを指しているポインタ）を防ぐ目的で使用される
+    {
+        let r;
+        {
+            let x: i32 = 10;
+            r = &x;
+            println!("{}", r);// ここならOK
+        }// ここでxのlifetimeが切れるため、期間外で出力するとコンパイルエラーが出る
+        // println!("{}", r);
+        //つまり、「参照の生存期間は、元の変数の生存期間に完全に含まれていなければならない」
+    }
+
+    {
+        let mut result: Option<&String> = None;
+        let x: String = String::from("123456");
+        {
+            let y: String = String::from("12345");
+            result  = Some(lifetime_longest(&x, &y));
+            // ここでresultを使うならうまくいく（yがまだ生きているため安全）
+            // if let Some(val) = result {
+            //     println!("{}", val);
+            // } else {
+            //     println!("No result found");
+            // }
+        }
+        // ❌ ここで `result` を使うとコンパイルエラー
+        // `result` の `Some(val)` が `&y` を持っている可能性があるが、
+        // `y` はすでにスコープを抜けて破棄されている
+        // → 借用チェッカーがこれを防ぐ（ダングリングポインタ防止）
+        // if let Some(val) = result {
+        //     println!("{}", val);
+        // } else {
+        //     println!("No result found");
+        // }
+    }
+}
+
+fn lifetime_longest<'a>(x: &'a String, y: &'a String) -> &'a String {
+    // lifetimeはxとyのどちらか短い方に制約されるという意味
+    // 仮にyの方がlifetimeが短ければ、返り値のlifetimeもyと同様になる
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+}
