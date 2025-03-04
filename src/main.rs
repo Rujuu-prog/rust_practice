@@ -312,7 +312,7 @@ fn ownership() {
         // v1からv2へ所有権が移ったため、エラーになる
         // v1.push(3);
     }// v2の値が破棄されて、メモリが解放される
-
+    println!("#--- copy ---");
     {// コピーについて
         let c1 = vec![1, 2, 3];
         println!("{:?}", c1);
@@ -322,7 +322,102 @@ fn ownership() {
         let c2 = c1.clone();
         println!("{:?}", c1);
         println!("{:?}", c2);
+        // 他には数値型、論理型、文字型、タプル（要素が全てCopy型）はcloneを使わなくてもcopyされる
+        // コンパイル時にサイズが決定できるため（高速なアクセスが保障される）
+        // 厳密には、Copyトレイを実装した型で、移動ではなくcopyされる
+    }
+    println!("#--- 所有権　関数 ---");
+    {// 関数の場合
+        // 関数の引数に値を渡す場合と、関数から戻り値を返す場合に所有権が移動する
+        let o1: String = String::from("Good");
+        let o2: String = String::from("world");
+
+        // 返り値で引数で受けた値も返すことで、引数に渡した後もo1, o2を使えるようにできる
+        // でも引数が増えると、返り値も増えるからスマートじゃない
+        let (r1, o1, o2) = ownership_fn_multi_return(o1, o2);
+        println!("{}", r1);
+
+        // o1とo2の所有権が引数に移動
+        let r2: String = ownership_fn(o1, o2);// 返り値がr1に移動
+        println!("{}", r2);
+        // Error
+        // println!("{}", o1);
+        // println!("{}", o2);
+    }
+    println!("#--- copyと移動について ---");
+    {// copyと移動について
+        let mut v1 = vec![0, 1, 2];
+        // println!("{:p}", v1.as_ptr());
+        // println!("{:p}", &v1[0]);
+        // println!("{}", v1.len());// 3
+        // println!("{}", v1.capacity());// 3
+
+        v1.push(4);
+        // capacityが3のため、追加すると容量が増え、それに合わせて値がそちらに移動する
+        // println!("{:p}", v1.as_ptr());
+        // println!("{:p}", &v1[0]);
+        // println!("{}", v1.len());// 4
+        // println!("{}", v1.capacity());// 6
+
+        // 指しているpointerが同一になる（copyではなく、所有権が移動したということ）
+        println!("{:p}", v1.as_ptr());
+        let v2 = v1;
+        println!("{:p}", v2.as_ptr());
+
+        // copyの場合
+        println!("{:p}", v2.as_ptr());
+        let v2_clone = v2.clone();
+        // copyしているため、v2_cloneの宣言後でも変数を使える
+        println!("{:p}", v2.as_ptr());
+        println!("{:p}", v2_clone.as_ptr());
+    }
+    println!("#--- 参照 ---");
+    {// 参照
+        // 所有権を持たないポインタ
+        // - 値を代入しても所有権の移動が起きない
+        // - 所有権を持たないため、値のLife timeに影響を与えない
+        // 変数に&を付けて生成する
+        // 参照した際の型は、通常の型に&が付いた形になる
+        // ある値の参照を作ることを借用するという
+        // 参照に*をつけることで、実体にアクセス可能
+        let x1 = vec![0, 1, 2];
+        let x2 = &x1;
+        println!("{:p}", x1.as_ptr());
+        println!("{:p}", x2.as_ptr());
+        // 参照は2種類ある
+        // 共有参照
+        // - readonlyで変更不可
+        // - &を付けて作成する
+        // - readonlyなため、同時に複数生成可能（値が書き換わらないため）
+        // 可変参照
+        // - readと変更が可能
+        // - 変数に&mutをつけて作成
+        // - ある値の可変参照が存在する場合、その値に参照（共有参照も可変参照も）は作れない（値の読み込み中に書き換わることを防ぐため）
+
+        let o1: String = String::from("Hello");
+        let o2: String = String::from("world");
+        let r1: String = ownership_reference(&o1, &o2);
+        // 参照しているため、所有権が移動しておらずエラーが出ない
+        println!("reference_o1:{}", o1);
+        println!("reference_o2:{}", o2);
+        println!("reference_r1:{}", r1);
+
     }
 
     println!("{}", num);
 }// numの値が破棄されて、メモリも解放される
+
+fn ownership_fn(s1: String, s2: String) -> String {
+    let text = format!("{}, {}", s1, s2);
+    text
+}
+
+fn ownership_fn_multi_return(s1: String, s2: String) -> (String, String, String) {
+    let text: String = format!("{}, {}", s1, s2);
+    (text, s1, s2)
+}
+
+fn ownership_reference(s1: &String, s2: &String) -> String {
+    let text: String = format!("{}, {}", s1, s2);
+    text
+}
