@@ -181,6 +181,8 @@ fn main() {
     println!("{}", fb_match_tuple);
 
     ownership();
+
+    smart_pointer();
 }
 
 fn say_hello() {
@@ -472,4 +474,19 @@ fn lifetime_longest<'a>(x: &'a String, y: &'a String) -> &'a String {
     } else {
         y
     }
+}
+
+fn smart_pointer() {
+    let x = Box::new(1);
+    println!("x: {:p}", x);
+    println!("x_v: {}", x);
+    // Box<i32>はポインタなため、*xを使う
+    println!("*x +2 = {}", *x + 2);
+    let x_stack = 2;
+    let x_ = &x_stack;
+    println!("x_stack: {:p}", x_);
+    println!("x_stack_v: {}", *x_);
+    // x_もポインタだが、rustが*x_に自動で読み替えてくれているため、エラーにならない。
+    println!("*x +2 = {}", x_ + 2);
+    // ヒープ領域に保存されるため、サイズが未確定でもコンパイルエラーにならない
 }
