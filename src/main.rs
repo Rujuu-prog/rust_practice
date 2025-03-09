@@ -522,6 +522,7 @@ fn struct_pra() {
         height: u32,
     }
     // メソッド定義
+    // データを持ち、一貫した動作をするもの
     impl Rectangle {
         // methodも所有権の移動が起きるため、参照にする
         fn area(&self) -> u32 {
