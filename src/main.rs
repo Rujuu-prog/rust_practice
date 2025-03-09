@@ -186,6 +186,8 @@ fn main() {
     smart_pointer();
 
     struct_pra();
+
+    enum_pra();
 }
 
 fn say_hello() {
@@ -563,3 +565,29 @@ fn struct_pra() {
     }
 }
 
+fn enum_pra() {
+    // 列挙型（取りうる値を列挙する）
+    enum Shape {
+        Circle,
+        Square(u32),// タプル型バリアント
+        Triangle{base: u32, height: u32},// 構造体バリアント
+    }
+
+    // 構造体と同様にmethodを持つことができる
+    // 異なる種類のデータをまとめ、動作を分岐させる場合にenum+implを行う
+    impl Shape {
+        fn call(&self) {
+            println!("called");
+        }
+    }
+
+    {
+        let c = Shape::Circle;
+        let s = Shape::Square(2);
+        let t = Shape::Triangle {base: 2, height: 3};
+
+        c.call();
+        s.call();
+        t.call();
+    }
+}
