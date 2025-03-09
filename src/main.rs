@@ -188,6 +188,8 @@ fn main() {
     struct_pra();
 
     enum_pra();
+
+    option_pra();
 }
 
 fn say_hello() {
@@ -590,5 +592,45 @@ fn enum_pra() {
         c.call();
         s.call();
         t.call();
+    }
+}
+
+fn option_pra() {
+    // 列挙型で定義された型の一つで、値が存在しない可能性があるものに対して使用する
+    // rustにはnullが存在しない
+    // option型は以下のように定義されている
+    // enum Option<T> {
+    //     None,
+    //     Some(T),
+    // }
+    // Optionはよく使われるため、「Option::」を省略できる
+    // let a = Option::Some(1);
+    let b = Some(2);
+    let c = Some("aa");
+    // Noneをただ宣言するだけだと、型が未定のため、明示的に型指定をする
+    let d: Option<i32> = None;
+
+    let v = vec![0,1,2];
+    let value = v.get(1);
+    println!("value: {:?}", value);
+    // matchかifで存在するか判定しないと使えない
+    match value {
+        Some(x) => println!("value: {}", x),
+        None => println!("none")
+    }
+    // これでもok
+    // ifであれば、全ての分岐は書く必要がない感じ
+    // 書いてないもの（none）は無視される
+    if let Some(x) = value {
+        println!("value: {}", x);
+    }
+
+    // matchで存在チェックするとき、特定の値で分岐もできる
+    match value {
+        // Some(1) => println!("one"),
+        // Some(2|3) => println!("two or three"),
+        Some(x) if *x == 1 => println!("value: one"),// マッチガード（x<10やx%==0とかができ、より柔軟にマッチできる）
+        Some(x) => println!("value: {}", x),
+        None => println!("none")
     }
 }
