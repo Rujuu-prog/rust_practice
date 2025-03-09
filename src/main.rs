@@ -184,6 +184,8 @@ fn main() {
     ownership();
 
     smart_pointer();
+
+    struct_pra();
 }
 
 fn say_hello() {
@@ -507,4 +509,39 @@ fn smart_pointer() {
         println!("count &b: {}", Rc::strong_count(&b));
     }// bのライフサイクルが終わるため、カウントが減る
     println!("count &a 3: {}", Rc::strong_count(&a));
+}
+
+fn struct_pra() {
+    // javaやpythonのclassのようなもの
+    // 関連のある複数の値をまとめて名前をつけられるデータ型
+    // 基本先頭が大文字で、複数の単語で命名するときは、スネークケースで命名する
+    struct Rectangle {
+        width: u32,
+        height: u32,
+    }
+    // メソッド定義
+    impl Rectangle {
+        // methodも所有権の移動が起きるため、参照にする
+        fn area(&self) -> u32 {
+            self.width * self.height
+        }
+    }
+
+    {
+        let height = 5;
+        // インスタンス化
+        // mutにすると、インスタンス化した後にも値を書き換えられるようになる
+        let mut r = Rectangle{
+            width: 10,
+            height,
+        };
+        println!("{}", r.width);
+        println!("{}", r.height);
+        println!("area: {}", r.area());
+
+        // 値を変更
+        r.width = 6;
+        println!("{}", r.width);
+        println!("area2: {}", r.area());
+    }
 }
