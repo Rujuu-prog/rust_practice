@@ -1,3 +1,4 @@
+use std::rc::Rc;
 const B: i32 = 2;
 
 fn main() {
@@ -477,6 +478,8 @@ fn lifetime_longest<'a>(x: &'a String, y: &'a String) -> &'a String {
 }
 
 fn smart_pointer() {
+    // ヒープ領域にi32の値が入り、スタックにポインタが入る。let y = x;などすると、yにポインタの値がわたり、所有権の移動が起き、xは無効になる。
+    // ヒープ領域に保存されるため、サイズが未確定でもコンパイルエラーにならない
     let x = Box::new(1);
     println!("x: {:p}", x);
     println!("x_v: {}", x);
@@ -488,5 +491,20 @@ fn smart_pointer() {
     println!("x_stack_v: {}", *x_);
     // x_もポインタだが、rustが*x_に自動で読み替えてくれているため、エラーにならない。
     println!("*x +2 = {}", x_ + 2);
-    // ヒープ領域に保存されるため、サイズが未確定でもコンパイルエラーにならない
+
+    //RCは値が参照されている数をカウントできる。（reference count）
+    // RCを使うことで、例外的に複数の所有者を持たせることができる。
+    // 参照カウントは、GCで使われる方法。
+    // importが必要
+    let a = Rc::new("aaa".to_string());
+    // aの所有権を渡さないために参照を引数へ渡す
+    println!("count: {}", Rc::strong_count(&a));
+    {
+        let b = Rc::clone(&a);
+        println!("a: {:p}", a);
+        println!("b: {:p}", b);
+        println!("count &a 2: {}", Rc::strong_count(&a));
+        println!("count &b: {}", Rc::strong_count(&b));
+    }// bのライフサイクルが終わるため、カウントが減る
+    println!("count &a 3: {}", Rc::strong_count(&a));
 }
