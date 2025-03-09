@@ -525,6 +525,17 @@ fn struct_pra() {
         fn area(&self) -> u32 {
             self.width * self.height
         }
+        // 型関連関数
+        // 特定のインスタンスではなく、型そのものに関連づけられた関数のこと（staticメソッドと同様のもの）
+        // 型自体に関連付けられているため、インスタンス化することなく使用できる
+        // いろんな用途があるが、特にコンストラクタとして使われる
+        // 慣習として、newという名前で作る
+        // selfを引数に持たなければ、型関連関数になる
+        // 戻り値はSelfでも、Rectangleでもok
+        fn new(width: u32, height: u32) -> Self {
+            Rectangle {width, height}
+        }
+
     }
 
     {
@@ -543,5 +554,12 @@ fn struct_pra() {
         r.width = 6;
         println!("{}", r.width);
         println!("area2: {}", r.area());
+
+        // 型関連関数
+        let r2 = Rectangle::new(10, 100);
+        println!("{}", r2.width);
+        println!("{}", r2.height);
+        println!("area3: {}", r2.area());
     }
 }
+
