@@ -1,5 +1,6 @@
 use std::rc::Rc;
 use rand::Rng;
+use test_module::sub_module1;
 
 const B: i32 = 2;
 
@@ -194,6 +195,8 @@ fn main() {
     option_pra();
 
     crate_pra();
+
+    module_pra();
 }
 
 fn say_hello() {
@@ -666,4 +669,73 @@ fn crate_pra(){
     // 試しにrandを使ってみる
     let random_num = rand::rng().random_range(1..101);
     println!("random_num: {}", random_num);
+}
+
+fn module_pra(){
+    // moduleとは
+    // クレート内のコードをグループ化して、可読性と再利用性を高める機構
+    // - 関数、構造体、列挙型、定数が収められる
+    // rustの名前空間として使用される
+    // 1ファイル1モジュール（モジュールが肥大化した場合は、複数ファイルにも分割可能）
+
+    // module内の要素の可視性も制御可能
+    // - public：要素がmoduleの外からもアクセス可能（pubキーワードをつける）
+    // - private：module内 or 子moduleからのみアクセス可能
+    // defaultは全てprivate
+
+    // moduleのネストについて
+    // ネストされた内側のmoduleをサブモジュールと呼ぶ
+    // サブモジュールの要素を外部から使用するには、要素だけではなく、サブモジュール自体もpublicにする必要がある
+    // pub(super)とすると、親モジュールからのみアクセス可能になる
+
+    // pathについて
+    // モジュールの要素を使用するには、pathの指定が必要
+    // pathの種類は以下の２種類
+    // - 絶対path：クレートの名前か、crateという文字列から始まる
+    // - 相対path：selfやsuper、今のモジュール内の識別子などを使って、現在のモジュールから始まる
+    // 区切り文字は::を使う
+
+    // importについて
+    // 使いたいmoduleの要素をimportすることで、局所的なaliasを作成でき、pathを省略できるようになる
+    // importには、「use」キーワードを使う
+    // 要素を直接importせず、その要素を含むmoduleやトレイトをimportして、要素自体には相対pathでアクセスするのが良い
+    // ↑一つ上の階層の要素を名前空間として利用し、要素名の衝突を防ぐため
+
+    // 絶対パス
+    // 絶対パスはcrateから始まるが、crateはルートクレートのことであり、pathの最上位を表しているため、現在のmain.rsを指すことになる
+    crate::test_module::sub_module1::test1();
+    // 相対パス
+    // selfは自分自身を表すため、今回の場合はmain.rsを指す
+    self::test_module::sub_module1::test1();
+    // selfは省略もできる
+    test_module::sub_module1::test1();
+
+    // test_module2はprivateなため、エラーになる
+    // test_module::sub_module2::test1();
+
+    //以下のようにimportすると、短く記載できる
+    // use test_module::sub_module1;
+    sub_module1::test1();
+
+}
+
+// 試しにつくる
+mod test_module {
+    pub mod sub_module1 {
+        pub fn test1() {
+            println!("test1");
+        }
+        fn test2(){
+            println!("test2");
+        }
+    }
+
+    mod sub_module2 {
+        pub fn test1() {
+            println!("test3");
+        }
+        fn test2(){
+            println!("test4");
+        }
+    }
 }
