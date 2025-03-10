@@ -1,6 +1,10 @@
 use std::rc::Rc;
 use rand::Rng;
 use test_module::sub_module1;
+// test_moduleの下位の要素をまとめてimportしたりもできる
+// use test_module::{sub_module1, sub_module2};
+// 全て取得するなら*も使える
+// use test_module::*;
 
 const B: i32 = 2;
 
@@ -720,22 +724,26 @@ fn module_pra(){
 }
 
 // 試しにつくる
-mod test_module {
-    pub mod sub_module1 {
-        pub fn test1() {
-            println!("test1");
-        }
-        fn test2(){
-            println!("test2");
-        }
-    }
+// mod test_module {
+//     pub mod sub_module1 {
+//         pub fn test1() {
+//             println!("test1");
+//         }
+//         fn test2(){
+//             println!("test2");
+//         }
+//     }
+//
+//     mod sub_module2 {
+//         pub fn test1() {
+//             println!("test3");
+//         }
+//         fn test2(){
+//             println!("test4");
+//         }
+//     }
+// }
 
-    mod sub_module2 {
-        pub fn test1() {
-            println!("test3");
-        }
-        fn test2(){
-            println!("test4");
-        }
-    }
-}
+// 別ファイルのmoduleの読み取り
+// セミコロンをつけることで、このmoduleの中身が、test_module.rsファイルにあることがコンパイラに伝わる
+mod test_module;
