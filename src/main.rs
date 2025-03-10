@@ -721,6 +721,9 @@ fn module_pra(){
     // use test_module::sub_module1;
     sub_module1::test1();
 
+    let test_struct = sub_module1::TestStruct::new(1, 2);
+    test_struct.add();
+
 }
 
 // 試しにつくる
