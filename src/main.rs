@@ -201,6 +201,8 @@ fn main() {
     crate_pra();
 
     module_pra();
+
+    lib_pra();
 }
 
 fn say_hello() {
@@ -750,3 +752,7 @@ fn module_pra(){
 // 別ファイルのmoduleの読み取り
 // セミコロンをつけることで、このmoduleの中身が、test_module.rsファイルにあることがコンパイラに伝わる
 mod test_module;
+
+fn lib_pra(){
+    rust_lesson::say_hello();
+}
