@@ -1,6 +1,7 @@
 use std::rc::Rc;
 use rand::Rng;
 use test_module::sub_module1;
+use rust_lesson::sample_trait::{Rectangle, Circle, Shape};
 // test_moduleの下位の要素をまとめてimportしたりもできる
 // use test_module::{sub_module1, sub_module2};
 // 全て取得するなら*も使える
@@ -203,6 +204,8 @@ fn main() {
     module_pra();
 
     lib_pra();
+
+    trait_prac();
 }
 
 fn say_hello() {
@@ -755,4 +758,20 @@ mod test_module;
 
 fn lib_pra(){
     rust_lesson::say_hello();
+}
+
+fn trait_prac() {
+    println!("Trait!");
+    let rec = Rectangle {
+        width: 5.0,
+        height: 10.0,
+    };
+    let cir = Circle {
+        radius: 5.0,
+    };
+
+    // traitもuseする必要がある（今回はuse Shape）
+    println!("rec_area: {}", rec.calc_area());
+    println!("rec_perimeter: {}", rec.calc_perimeter());
+    println!("rec_say: {}", )
 }
